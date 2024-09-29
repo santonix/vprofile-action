@@ -89,19 +89,8 @@ jobs:
       - name: print config file
         run: cat ~/.kube/config
 
-      - name: Create Docker Registry Secret
-        run: |
-          if ! kubectl get secret regcred -n default; then 
-            kubectl create secret docker-registry regcred \
-              --docker-server=${{ secrets.REGISTRY }}  \
-              --docker-username=AWS \
-              --docker-password=$(aws ecr get-login-password --region ${{ env.AWS_REGION }}) \
-              --docker-email=jofranco1203@gmail.com
-          else 
-            echo "Secret regcred already exists, skipping creation."
-          fi
-
-
+      - name: login to ECR
+        run: kubectl create secret docker-registry regcred  --docker-server=${{ secrets.REGISTRY }}  --docker-username=AWS --docker-password=$(aws ecr get-login-password)  
 
       - name: Deploy with Helm
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.8
