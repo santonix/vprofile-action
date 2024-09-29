@@ -91,15 +91,16 @@ jobs:
 
       - name: Create Docker Registry Secret
         run: |
-          if ! kubectl get secret regcred -n default; then
+          if ! kubectl get secret regcred -n default; then 
             kubectl create secret docker-registry regcred \
-              --docker-server=<your-docker-server> \
+              --docker-server=${{ secrets.REGISTRY }}  \
               --docker-username=AWS \
               --docker-password=$(aws ecr get-login-password --region ${{ env.AWS_REGION }}) \
-              --docker-email=<your-email>
-          else
+              --docker-email=jofranco1203@gmail.com
+          else 
             echo "Secret regcred already exists, skipping creation."
           fi
+
 
 
       - name: Deploy with Helm
